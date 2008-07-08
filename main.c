@@ -21,13 +21,33 @@
  * USA
  */
 
+#include <signal.h>
 #include <glib.h>
+
+static GMainLoop* main_loop = NULL;
+
+static void
+sigint_action (int        signal,
+	       siginfo_t* info,
+	       void     * context)
+{
+	g_printerr ("<Ctrl>-C pressed; exiting...\n");
+	g_main_loop_quit (main_loop);
+}
 
 int
 main (int   argc,
       char**argv)
 {
-	GMainLoop* main_loop;
+	struct sigaction new_handler = {0};
+
+	new_handler.sa_sigaction = sigint_action;
+	new_handler.sa_flags     = SA_RESETHAND | SA_SIGINFO;
+
+	if (0 != sigaction (SIGINT, &new_handler, NULL)) {
+		g_printerr ("error setting up system handler\n");
+		return 1;
+	}
 
 	main_loop = g_main_loop_new (NULL, FALSE);
 	g_main_loop_run (main_loop);
