@@ -27,6 +27,7 @@
 typedef struct {
 	gint          id;
 	GThread     * thread;
+	GMainContext* context;
 } Worker;
 
 static GMainLoop* main_loop = NULL;
@@ -43,6 +44,9 @@ sigint_action (int        signal,
 static gpointer
 create_worker (gpointer data)
 {
+	Worker* worker = data;
+
+	worker->context = g_main_context_new ();
 	return NULL;
 }
 
@@ -93,6 +97,7 @@ main (int   argc,
 	while (threads) {
 		Worker* worker = threads->data;
 		g_thread_join (worker->thread);
+		g_main_context_unref (worker->context);
 		g_slice_free (Worker, worker);
 		threads = g_list_delete_link (threads, threads);
 	}
