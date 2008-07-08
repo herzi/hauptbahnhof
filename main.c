@@ -25,6 +25,7 @@
 #include <glib.h>
 
 typedef struct {
+	gint          id;
 	GThread     * thread;
 } Worker;
 
@@ -69,8 +70,9 @@ main (int   argc,
 	for (thread = 0; thread < n_threads; thread++) {
 		GError* error = NULL;
 		Worker* worker = g_slice_new0 (Worker);
+		worker->id     = thread;
 		worker->thread = g_thread_create (create_worker,
-						  GINT_TO_POINTER (thread),
+						  worker,
 						  TRUE,
 						  &error);
 
@@ -78,7 +80,7 @@ main (int   argc,
 			threads = g_list_prepend (threads, worker);
 		} else {
 			g_printerr ("error creating thread %d (%d of %d)\n",
-				    thread, thread + 1, n_threads);
+				    worker->id, thread + 1, n_threads);
 		}
 	}
 	threads = g_list_reverse (threads);
