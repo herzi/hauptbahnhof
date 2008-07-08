@@ -35,11 +35,22 @@ sigint_action (int        signal,
 	g_main_loop_quit (main_loop);
 }
 
+static gpointer
+create_worker (gpointer data)
+{
+	return NULL;
+}
+
 int
 main (int   argc,
       char**argv)
 {
 	struct sigaction new_handler = {0};
+	gint n_threads = 2;
+	gint thread;
+	GList* threads = NULL;
+
+	g_thread_init (NULL);
 
 	new_handler.sa_sigaction = sigint_action;
 	new_handler.sa_flags     = SA_RESETHAND | SA_SIGINFO;
@@ -50,8 +61,32 @@ main (int   argc,
 	}
 
 	main_loop = g_main_loop_new (NULL, FALSE);
+
+	for (thread = 0; thread < n_threads; thread++) {
+		GError* error = NULL;
+		GThread* thread = g_thread_create (create_worker,
+						   GINT_TO_POINTER (thread),
+						   TRUE,
+						   &error);
+
+		if (!error) {
+			threads = g_list_prepend (threads, thread);
+		} else {
+			g_printerr ("error creating thread %d (%d of %d)\n",
+				    thread, thread + 1, n_threads);
+		}
+	}
+	threads = g_list_reverse (threads);
+
 	g_main_loop_run (main_loop);
+
 	g_main_loop_unref (main_loop);
+	main_loop = NULL;
+
+	while (threads) {
+		g_thread_join (threads->data);
+		threads = g_list_delete_link (threads, threads);
+	}
 
 	return 0;
 }
