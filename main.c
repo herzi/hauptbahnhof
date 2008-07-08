@@ -24,6 +24,10 @@
 #include <signal.h>
 #include <glib.h>
 
+typedef struct {
+	GThread     * thread;
+} Worker;
+
 static GMainLoop* main_loop = NULL;
 
 static void
@@ -64,13 +68,14 @@ main (int   argc,
 
 	for (thread = 0; thread < n_threads; thread++) {
 		GError* error = NULL;
-		GThread* thread = g_thread_create (create_worker,
-						   GINT_TO_POINTER (thread),
-						   TRUE,
-						   &error);
+		Worker* worker = g_slice_new0 (Worker);
+		worker->thread = g_thread_create (create_worker,
+						  GINT_TO_POINTER (thread),
+						  TRUE,
+						  &error);
 
 		if (!error) {
-			threads = g_list_prepend (threads, thread);
+			threads = g_list_prepend (threads, worker);
 		} else {
 			g_printerr ("error creating thread %d (%d of %d)\n",
 				    thread, thread + 1, n_threads);
@@ -84,7 +89,9 @@ main (int   argc,
 	main_loop = NULL;
 
 	while (threads) {
-		g_thread_join (threads->data);
+		Worker* worker = threads->data;
+		g_thread_join (worker->thread);
+		g_slice_free (Worker, worker);
 		threads = g_list_delete_link (threads, threads);
 	}
 
