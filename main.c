@@ -63,12 +63,6 @@ main (int   argc,
 	g_main_loop_unref (main_loop);
 	main_loop = NULL;
 
-	while (queue->threads) {
-		Worker* worker = queue->threads->data;
-		worker_shutdown (worker);
-		queue->threads = g_list_delete_link (queue->threads, queue->threads);
-	}
-
 	queue_free (queue);
 
 	return 0;

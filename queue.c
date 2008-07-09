@@ -51,6 +51,12 @@ queue_new (gint n_threads)
 void
 queue_free (Queue* queue)
 {
+	while (queue->threads) {
+		Worker* worker = queue->threads->data;
+		worker_shutdown (worker);
+		queue->threads = g_list_delete_link (queue->threads, queue->threads);
+	}
+
 	g_slice_free (Queue, queue);
 }
 
