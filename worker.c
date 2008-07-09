@@ -23,6 +23,12 @@
 
 #include "worker.h"
 
+Worker*
+worker_new (void)
+{
+	return g_slice_new0 (Worker);
+}
+
 static gboolean
 worker_main_quit (gpointer data)
 {

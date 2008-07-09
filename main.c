@@ -71,7 +71,7 @@ main (int   argc,
 
 	for (thread = 0; thread < n_threads; thread++) {
 		GError* error = NULL;
-		Worker* worker = g_slice_new0 (Worker);
+		Worker* worker = worker_new ();
 		worker->id     = thread;
 		worker->thread = g_thread_create (create_worker,
 						  worker,
