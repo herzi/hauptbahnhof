@@ -30,7 +30,7 @@ G_BEGIN_DECLS
 
 typedef struct _Worker Worker;
 
-Worker* worker_new      (void);
+Worker* worker_new      (guint   id);
 void    worker_shutdown (Worker* worker);
 
 struct _Worker {

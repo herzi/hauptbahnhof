@@ -24,9 +24,11 @@
 #include "worker.h"
 
 Worker*
-worker_new (void)
+worker_new (guint id)
 {
-	return g_slice_new0 (Worker);
+	Worker* worker = g_slice_new0 (Worker);
+	worker->id     = id;
+	return worker;
 }
 
 static gboolean

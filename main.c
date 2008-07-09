@@ -71,8 +71,7 @@ main (int   argc,
 
 	for (thread = 0; thread < n_threads; thread++) {
 		GError* error = NULL;
-		Worker* worker = worker_new ();
-		worker->id     = thread;
+		Worker* worker = worker_new (thread);
 		worker->thread = g_thread_create (create_worker,
 						  worker,
 						  TRUE,
