@@ -27,6 +27,7 @@
 
 struct _Queue {
 	GList* threads;
+	guint  last_job_id;
 };
 
 /*
@@ -143,7 +144,7 @@ queue_queue (Queue      * queue,
 
 	g_return_if_fail (async != NULL);
 
-	job = queue_job_new (0, queue, async, destroy, user_data);
+	job = queue_job_new (queue->last_job_id++, queue, async, destroy, user_data);
 
 	g_warning ("FIXME: queue instead of free");
 	queue_job_free (job);
