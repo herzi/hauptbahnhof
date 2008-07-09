@@ -35,6 +35,13 @@ worker_main_quit (gpointer data)
 	return FALSE;
 }
 
+/*
+ * worker_shutdown:
+ * @worker: a #Worker
+ *
+ * Quit the main loop of the worker thread and join the thread until the main
+ * loop is quit; the release the assotiated ressources.
+ */
 void
 worker_shutdown (Worker* worker)
 {
@@ -44,5 +51,10 @@ worker_shutdown (Worker* worker)
 			       worker, NULL);
 	g_source_attach (quit_source, worker->context);
 	g_source_unref (quit_source);
+
+	g_thread_join (worker->thread);
+	g_main_loop_unref (worker->loop);
+	g_main_context_unref (worker->context);
+	g_slice_free (Worker, worker);
 }
 

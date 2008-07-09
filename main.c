@@ -95,10 +95,6 @@ main (int   argc,
 	while (threads) {
 		Worker* worker = threads->data;
 		worker_shutdown (worker);
-		g_thread_join (worker->thread);
-		g_main_loop_unref (worker->loop);
-		g_main_context_unref (worker->context);
-		g_slice_free (Worker, worker);
 		threads = g_list_delete_link (threads, threads);
 	}
 
