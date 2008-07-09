@@ -37,10 +37,6 @@ guint  queue_queue (Queue         * queue,
 		    GFunc           destroy,
 		    gpointer        user_data);
 
-struct _Queue {
-	GList* threads;
-};
-
 G_END_DECLS
 
 #endif /* !QUEUE_H */

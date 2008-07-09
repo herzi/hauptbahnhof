@@ -25,6 +25,10 @@
 
 #include "worker.h"
 
+struct _Queue {
+	GList* threads;
+};
+
 /*
  * queue_new:
  * n_threads: the number of threads to create
