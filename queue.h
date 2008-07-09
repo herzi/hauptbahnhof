@@ -30,12 +30,12 @@ G_BEGIN_DECLS
 
 typedef struct _Queue Queue;
 
-Queue* queue_new   (gint            n_threads);
-void   queue_free  (Queue         * queue);
-guint  queue_queue (Queue         * queue,
-		    GThreadFunc     async_operation,
-		    GFunc           destroy,
-		    gpointer        user_data);
+Queue*  queue_new   (gint            n_threads);
+void    queue_free  (Queue         * queue);
+guint32 queue_queue (Queue         * queue,
+		     GThreadFunc     async_operation,
+		     GFunc           destroy,
+		     gpointer        user_data);
 
 G_END_DECLS
 
