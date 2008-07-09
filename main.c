@@ -24,12 +24,7 @@
 #include <signal.h>
 #include <glib.h>
 
-typedef struct {
-	gint          id;
-	GThread     * thread;
-	GMainContext* context;
-	GMainLoop   * loop;
-} Worker;
+#include "worker.h"
 
 static GMainLoop* main_loop = NULL;
 

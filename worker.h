@@ -24,5 +24,17 @@
 #ifndef WORKER_H
 #define WORKER_H
 
+#include <glib.h>
+
+G_BEGIN_DECLS
+
+typedef struct {
+	gint          id;
+	GThread     * thread;
+	GMainContext* context;
+	GMainLoop   * loop;
+} Worker;
+
+G_END_DECLS
 
 #endif /* !WORKER_H */
