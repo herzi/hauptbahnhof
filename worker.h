@@ -28,12 +28,16 @@
 
 G_BEGIN_DECLS
 
-typedef struct {
+typedef struct _Worker Worker;
+
+void worker_shutdown (Worker* worker);
+
+struct _Worker {
 	gint          id;
 	GThread     * thread;
 	GMainContext* context;
 	GMainLoop   * loop;
-} Worker;
+};
 
 G_END_DECLS
 

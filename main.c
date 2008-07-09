@@ -106,6 +106,7 @@ main (int   argc,
 
 	while (threads) {
 		Worker* worker = threads->data;
+		worker_shutdown (worker);
 		GSource* quit_source = g_idle_source_new ();
 		g_source_set_callback (quit_source,
 				       worker_main_quit,

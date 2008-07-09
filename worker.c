@@ -23,3 +23,8 @@
 
 #include "worker.h"
 
+void
+worker_shutdown (Worker* worker)
+{
+}
+
