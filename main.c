@@ -24,6 +24,7 @@
 #include <signal.h>
 #include <glib.h>
 
+#include "queue.h"
 #include "worker.h"
 
 static GMainLoop* main_loop = NULL;
@@ -41,6 +42,7 @@ int
 main (int   argc,
       char**argv)
 {
+	Queue* queue;
 	struct sigaction new_handler = {0};
 	gint n_threads = 2;
 	gint thread;
@@ -55,6 +57,8 @@ main (int   argc,
 		g_printerr ("error setting up system handler\n");
 		return 1;
 	}
+
+	queue = queue_new ();
 
 	main_loop = g_main_loop_new (NULL, FALSE);
 
@@ -81,6 +85,8 @@ main (int   argc,
 		worker_shutdown (worker);
 		threads = g_list_delete_link (threads, threads);
 	}
+
+	queue_free (queue);
 
 	return 0;
 }
