@@ -24,5 +24,19 @@
 #ifndef QUEUE_H
 #define QUEUE_H
 
+#include <glib.h>
+
+G_BEGIN_DECLS
+
+typedef struct _Queue Queue;
+
+Queue* queue_new  (void);
+void   queue_free (Queue* queue);
+
+struct _Queue {
+	gpointer dummy;
+};
+
+G_END_DECLS
 
 #endif /* !QUEUE_H */

@@ -23,3 +23,15 @@
 
 #include "queue.h"
 
+Queue*
+queue_new (void)
+{
+	return g_slice_new0 (Queue);
+}
+
+void
+queue_free (Queue* queue)
+{
+	g_slice_free (Queue, queue);
+}
+
