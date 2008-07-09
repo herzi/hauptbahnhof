@@ -23,11 +23,42 @@
 
 #include "worker.h"
 
-Worker*
-worker_new (guint id)
+static gpointer
+create_worker (gpointer data)
 {
-	Worker* worker = g_slice_new0 (Worker);
-	worker->id     = id;
+	Worker* worker = data;
+
+	worker->context = g_main_context_new ();
+	worker->loop    = g_main_loop_new (worker->context, FALSE);
+	g_main_loop_run (worker->loop);
+	return NULL;
+}
+
+/*
+ * worker_new:
+ * @id: an id for the thread
+ * @error: return location for a #GError
+ *
+ * Create a new worker thread.
+ *
+ * Returns: the #Worker object.
+ */
+Worker*
+worker_new (guint   id,
+	    GError**error)
+{
+	Worker* worker;
+
+	g_return_val_if_fail (!error || !*error, NULL);
+
+	worker     = g_slice_new0 (Worker);
+	worker->id = id;
+
+	worker->thread = g_thread_create (create_worker,
+					  worker,
+					  TRUE,
+					  error);
+
 	return worker;
 }
 

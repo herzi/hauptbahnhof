@@ -37,17 +37,6 @@ sigint_action (int        signal,
 	g_main_loop_quit (main_loop);
 }
 
-static gpointer
-create_worker (gpointer data)
-{
-	Worker* worker = data;
-
-	worker->context = g_main_context_new ();
-	worker->loop    = g_main_loop_new (worker->context, FALSE);
-	g_main_loop_run (worker->loop);
-	return NULL;
-}
-
 int
 main (int   argc,
       char**argv)
@@ -71,11 +60,7 @@ main (int   argc,
 
 	for (thread = 0; thread < n_threads; thread++) {
 		GError* error = NULL;
-		Worker* worker = worker_new (thread);
-		worker->thread = g_thread_create (create_worker,
-						  worker,
-						  TRUE,
-						  &error);
+		Worker* worker = worker_new (thread, &error);
 
 		if (!error) {
 			threads = g_list_prepend (threads, worker);
