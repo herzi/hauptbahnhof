@@ -23,8 +23,26 @@
 
 #include "worker.h"
 
+static gboolean
+worker_main_quit (gpointer data)
+{
+	Worker* worker = data;
+
+	g_printerr ("quitting main loop of thread %d\n",
+		    worker->id);
+	g_main_loop_quit (worker->loop);
+
+	return FALSE;
+}
+
 void
 worker_shutdown (Worker* worker)
 {
+	GSource* quit_source = g_idle_source_new ();
+	g_source_set_callback (quit_source,
+			       worker_main_quit,
+			       worker, NULL);
+	g_source_attach (quit_source, worker->context);
+	g_source_unref (quit_source);
 }
 
