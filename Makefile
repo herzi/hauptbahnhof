@@ -11,10 +11,10 @@ headers=\
 	$(NULL)
 
 demo: $(sources:.c=.o) Makefile
-	gcc -o $@ $(sources:.c=.o) $(shell pkg-config --libs gthread-2.0)
+	gcc -ggdb -o $@ $(sources:.c=.o) $(shell pkg-config --libs gthread-2.0)
 
 %.o: %.c $(headers) Makefile
-	gcc -c -o $@ $< $(shell pkg-config --cflags gthread-2.0)
+	gcc -ggdb -c -o $@ $< $(shell pkg-config --cflags gthread-2.0)
 
 clean:
 	rm -rf *.o
