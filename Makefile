@@ -2,8 +2,10 @@ all: demo
 
 sources=\
 	main.c \
+	worker.c \
 	$(NULL)
 headers=\
+	worker.h \
 	$(NULL)
 
 demo: $(sources:.c=.o) Makefile
@@ -13,4 +15,5 @@ demo: $(sources:.c=.o) Makefile
 	gcc -c -o $@ $< $(shell pkg-config --cflags gthread-2.0)
 
 clean:
+	rm -rf *.o
 	rm -rf demo
