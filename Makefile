@@ -2,9 +2,11 @@ all: demo
 
 sources=\
 	main.c \
+	queue.c \
 	worker.c \
 	$(NULL)
 headers=\
+	queue.h \
 	worker.h \
 	$(NULL)
 
