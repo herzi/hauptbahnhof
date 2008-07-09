@@ -25,6 +25,14 @@
 
 #include "worker.h"
 
+/*
+ * queue_new:
+ * n_threads: the number of threads to create
+ *
+ * Create a new workload queue.
+ *
+ * Returns the newly created #Queue.
+ */
 Queue*
 queue_new (gint n_threads)
 {
@@ -48,6 +56,12 @@ queue_new (gint n_threads)
 
 }
 
+/*
+ * queue_free:
+ * queue: the #Queue to free
+ *
+ * Releases all ressources assotiated to the queue.
+ */
 void
 queue_free (Queue* queue)
 {
@@ -58,5 +72,28 @@ queue_free (Queue* queue)
 	}
 
 	g_slice_free (Queue, queue);
+}
+
+/*
+ * queue_queue:
+ * @queue: the #Queue to attach this job request to
+ * @async: the function (running in a separate thread) to be executed
+ * asynchronously
+ * @finalize: the function (running in the main thread) to be executed
+ * after the asynchronous function finished. The result of @async will be
+ * passed as the first parameter, the @user_data as the second.
+ * @user_data: the user data for the GThreadFunc and GFunc
+ *
+ * Queue a job request.
+ *
+ */
+/* Returns: the id of the job within this queue */
+void
+queue_queue (Queue         * queue,
+	     GThreadFunc     async,
+	     GFunc           finalize,
+	     gpointer        user_data)
+{
+	g_warning ("not implemented yet\n");
 }
 

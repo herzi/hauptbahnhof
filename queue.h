@@ -30,8 +30,12 @@ G_BEGIN_DECLS
 
 typedef struct _Queue Queue;
 
-Queue* queue_new  (gint   n_threads);
-void   queue_free (Queue* queue);
+Queue* queue_new   (gint            n_threads);
+void   queue_free  (Queue         * queue);
+void   queue_queue (Queue         * queue,
+		    GThreadFunc     async_operation,
+		    GFunc           finalize,
+		    gpointer        user_data);
 
 struct _Queue {
 	GList* threads;
