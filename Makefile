@@ -11,7 +11,7 @@ headers=\
 demo: $(sources:.c=.o) Makefile
 	gcc -o $@ $(sources:.c=.o) $(shell pkg-config --libs gthread-2.0)
 
-.c.o: $(headers) Makefile
+%.o: %.c $(headers) Makefile
 	gcc -c -o $@ $< $(shell pkg-config --cflags gthread-2.0)
 
 clean:
