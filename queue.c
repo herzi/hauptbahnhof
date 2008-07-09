@@ -74,12 +74,53 @@ queue_free (Queue* queue)
 	g_slice_free (Queue, queue);
 }
 
+/* START: QueueJob API */
+
+struct QueueJob {
+	Queue const* queue;
+	GThreadFunc  async;
+	gpointer     async_result;
+	GFunc        destroy;
+	gpointer     user_data;
+	guint        id;
+	guint        started : 1;
+	guint        finished : 1;
+};
+
+static struct QueueJob*
+queue_job_new (guint        id,
+	       Queue const* queue,
+	       GThreadFunc  async,
+	       GFunc        destroy,
+	       gpointer     user_data)
+{
+	struct QueueJob* self = g_slice_new0 (struct QueueJob);
+	self->id        = id;
+	self->queue     = queue;
+	self->async     = async;
+	self->destroy   = destroy;
+	self->user_data = user_data;
+	return self;
+}
+
+static void
+queue_job_free (struct QueueJob* self)
+{
+	if (self->destroy) {
+		self->destroy (self->async_result, self->user_data);
+	}
+
+	g_slice_free (struct QueueJob, self);
+}
+
+/* END: QueueJob API */
+
 /*
  * queue_queue:
  * @queue: the #Queue to attach this job request to
  * @async: the function (running in a separate thread) to be executed
  * asynchronously
- * @finalize: the function (running in the main thread) to be executed
+ * @destroy: the function (running in the main thread) to be executed
  * after the asynchronous function finished. The result of @async will be
  * passed as the first parameter, the @user_data as the second.
  * @user_data: the user data for the GThreadFunc and GFunc
@@ -88,12 +129,21 @@ queue_free (Queue* queue)
  *
  */
 /* Returns: the id of the job within this queue */
-void
-queue_queue (Queue         * queue,
-	     GThreadFunc     async,
-	     GFunc           finalize,
-	     gpointer        user_data)
+guint
+queue_queue (Queue      * queue,
+	     GThreadFunc  async,
+	     GFunc        destroy,
+	     gpointer     user_data)
 {
-	g_warning ("not implemented yet\n");
+	struct QueueJob* job;
+
+	g_return_if_fail (async != NULL);
+
+	job = queue_job_new (0, queue, async, destroy, user_data);
+
+	g_warning ("FIXME: queue instead of free");
+	queue_job_free (job);
+
+	return 0;
 }
 

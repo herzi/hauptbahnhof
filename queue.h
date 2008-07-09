@@ -32,9 +32,9 @@ typedef struct _Queue Queue;
 
 Queue* queue_new   (gint            n_threads);
 void   queue_free  (Queue         * queue);
-void   queue_queue (Queue         * queue,
+guint  queue_queue (Queue         * queue,
 		    GThreadFunc     async_operation,
-		    GFunc           finalize,
+		    GFunc           destroy,
 		    gpointer        user_data);
 
 struct _Queue {
