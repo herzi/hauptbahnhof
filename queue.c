@@ -23,6 +23,7 @@
 
 #include "queue.h"
 
+#include <unistd.h>
 #include "worker.h"
 
 struct _Queue {
@@ -48,6 +49,13 @@ struct QueueJob {
 static void queue_schedule_job (Queue          * queue,
 				struct QueueJob* job);
 
+static inline guint
+get_n_processors (void)
+{
+	/* FIXME: add Mac/Windows implementations */
+	return sysconf(_SC_NPROCESSORS_ONLN);
+}
+
 /*
  * queue_new:
  *
@@ -60,7 +68,7 @@ queue_new (void)
 {
 	Queue* queue = g_slice_new0 (Queue);
 	gint thread;
-	gint n_threads = 2;
+	gint n_threads = get_n_processors (); /* FIXME: make G_GNUC_CONST and put into loop argument? */
 
 	for (thread = 0; thread < n_threads; thread++) {
 		GError* error = NULL;
@@ -164,7 +172,7 @@ job_done (gpointer user_data)
 
 	queue_job_free (job);
 
-	return FALSE;
+	return FALSE; /* execute once */
 }
 
 static gboolean
