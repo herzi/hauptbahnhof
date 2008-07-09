@@ -23,10 +23,29 @@
 
 #include "queue.h"
 
+#include "worker.h"
+
 Queue*
-queue_new (void)
+queue_new (gint n_threads)
 {
-	return g_slice_new0 (Queue);
+	Queue* queue = g_slice_new0 (Queue);
+	gint thread;
+
+	for (thread = 0; thread < n_threads; thread++) {
+		GError* error = NULL;
+		Worker* worker = worker_new (thread, &error);
+
+		if (!error) {
+			queue->threads = g_list_prepend (queue->threads, worker);
+		} else {
+			g_printerr ("error creating thread %d (%d of %d)\n",
+				    worker->id, thread + 1, n_threads);
+		}
+	}
+	queue->threads = g_list_reverse (queue->threads);
+
+	return queue;
+
 }
 
 void

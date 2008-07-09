@@ -44,9 +44,6 @@ main (int   argc,
 {
 	Queue* queue;
 	struct sigaction new_handler = {0};
-	gint n_threads = 2;
-	gint thread;
-
 	g_thread_init (NULL);
 
 	new_handler.sa_sigaction = sigint_action;
@@ -57,22 +54,9 @@ main (int   argc,
 		return 1;
 	}
 
-	queue = queue_new ();
+	queue = queue_new (2 /* threads */);
 
 	main_loop = g_main_loop_new (NULL, FALSE);
-
-	for (thread = 0; thread < n_threads; thread++) {
-		GError* error = NULL;
-		Worker* worker = worker_new (thread, &error);
-
-		if (!error) {
-			queue->threads = g_list_prepend (queue->threads, worker);
-		} else {
-			g_printerr ("error creating thread %d (%d of %d)\n",
-				    worker->id, thread + 1, n_threads);
-		}
-	}
-	queue->threads = g_list_reverse (queue->threads);
 
 	g_main_loop_run (main_loop);
 

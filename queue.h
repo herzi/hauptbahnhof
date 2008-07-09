@@ -30,7 +30,7 @@ G_BEGIN_DECLS
 
 typedef struct _Queue Queue;
 
-Queue* queue_new  (void);
+Queue* queue_new  (gint   n_threads);
 void   queue_free (Queue* queue);
 
 struct _Queue {
