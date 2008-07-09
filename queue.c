@@ -50,17 +50,17 @@ static void queue_schedule_job (Queue          * queue,
 
 /*
  * queue_new:
- * @n_threads: the number of threads to create
  *
  * Create a new workload queue.
  *
  * Returns the newly created #Queue.
  */
 Queue*
-queue_new (gint n_threads)
+queue_new (void)
 {
 	Queue* queue = g_slice_new0 (Queue);
 	gint thread;
+	gint n_threads = 2;
 
 	for (thread = 0; thread < n_threads; thread++) {
 		GError* error = NULL;

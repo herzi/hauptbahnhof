@@ -22,6 +22,7 @@
  */
 
 #include <signal.h>
+#include <unistd.h>
 #include <glib.h>
 
 #include "queue.h"
@@ -36,6 +37,14 @@ sigint_action (int        signal,
 {
 	g_printerr ("<Ctrl>-C pressed; quitting main loop\n");
 	g_main_loop_quit (main_loop);
+}
+
+gpointer
+sleep_job (gpointer user_data)
+{
+	sleep (1);
+	g_print ("slept well\n");
+	return NULL;
 }
 
 int
@@ -54,7 +63,19 @@ main (int   argc,
 		return 1;
 	}
 
-	queue = queue_new (2 /* threads */);
+	queue = queue_new ();
+	queue_queue (queue,
+		     sleep_job,
+		     NULL,
+		     NULL);
+	queue_queue (queue,
+		     sleep_job,
+		     NULL,
+		     NULL);
+	queue_queue (queue,
+		     sleep_job,
+		     NULL,
+		     NULL);
 
 	main_loop = g_main_loop_new (NULL, FALSE);
 
