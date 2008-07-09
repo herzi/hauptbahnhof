@@ -46,7 +46,6 @@ main (int   argc,
 	struct sigaction new_handler = {0};
 	gint n_threads = 2;
 	gint thread;
-	GList* threads = NULL;
 
 	g_thread_init (NULL);
 
@@ -67,23 +66,23 @@ main (int   argc,
 		Worker* worker = worker_new (thread, &error);
 
 		if (!error) {
-			threads = g_list_prepend (threads, worker);
+			queue->threads = g_list_prepend (queue->threads, worker);
 		} else {
 			g_printerr ("error creating thread %d (%d of %d)\n",
 				    worker->id, thread + 1, n_threads);
 		}
 	}
-	threads = g_list_reverse (threads);
+	queue->threads = g_list_reverse (queue->threads);
 
 	g_main_loop_run (main_loop);
 
 	g_main_loop_unref (main_loop);
 	main_loop = NULL;
 
-	while (threads) {
-		Worker* worker = threads->data;
+	while (queue->threads) {
+		Worker* worker = queue->threads->data;
 		worker_shutdown (worker);
-		threads = g_list_delete_link (threads, threads);
+		queue->threads = g_list_delete_link (queue->threads, queue->threads);
 	}
 
 	queue_free (queue);

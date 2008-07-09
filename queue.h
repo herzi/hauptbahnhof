@@ -34,7 +34,7 @@ Queue* queue_new  (void);
 void   queue_free (Queue* queue);
 
 struct _Queue {
-	gpointer dummy;
+	GList* threads;
 };
 
 G_END_DECLS
