@@ -53,6 +53,8 @@ main (int   argc,
 {
 	Queue* queue;
 	struct sigaction new_handler = {0};
+	gint i;
+
 	g_thread_init (NULL);
 
 	new_handler.sa_sigaction = sigint_action;
@@ -64,10 +66,12 @@ main (int   argc,
 	}
 
 	queue = queue_new ();
-	queue_queue (queue,
-		     sleep_job,
-		     NULL,
-		     NULL);
+	for (i = 0; i < 1; i++) {
+		queue_queue (queue,
+			     sleep_job,
+			     NULL,
+			     NULL);
+	}
 	queue_queue (queue,
 		     sleep_job,
 		     NULL,
