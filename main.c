@@ -25,6 +25,8 @@
 #include <unistd.h>
 #include <glib.h>
 
+#include <stdio.h>
+
 #include "queue.h"
 #include "worker.h"
 
@@ -39,12 +41,31 @@ sigint_action (int        signal,
 	g_main_loop_quit (main_loop);
 }
 
-gpointer
+static gpointer
 sleep_job (gpointer user_data)
 {
-	sleep (1);
-	g_print ("slept well\n");
+	gint i;
+	guint64 j = 0;
+	for (i = 0; i < 15000; i++)
+		j += i;
 	return NULL;
+}
+
+static void
+sleep_done (gpointer data,
+	    gpointer user_data)
+{
+	g_print ("\rjob %d done",
+		 GPOINTER_TO_INT (user_data));
+}
+
+static void
+sleep_done_last (gpointer data,
+		 gpointer user_data)
+{
+	sleep_done (data, user_data);
+
+	g_print ("\n");
 }
 
 int
@@ -66,12 +87,16 @@ main (int   argc,
 	}
 
 	queue = queue_new ();
-	for (i = 0; i < 3; i++) {
+	for (i = 0; i < 30000; i++) {
 		queue_queue (queue,
 			     sleep_job,
-			     NULL,
-			     NULL);
+			     sleep_done,
+			     GINT_TO_POINTER (i));
 	}
+	queue_queue (queue,
+		     sleep_job,
+		     sleep_done_last,
+		     GINT_TO_POINTER (i));
 
 	main_loop = g_main_loop_new (NULL, FALSE);
 
