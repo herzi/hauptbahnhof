@@ -145,10 +145,6 @@ queue_job_new (guint        id,
 static void
 queue_job_free (struct QueueJob* self)
 {
-	if (self->destroy) {
-		self->destroy (self->async_result, self->user_data);
-	}
-
 	g_slice_free (struct QueueJob, self);
 }
 
@@ -164,8 +160,6 @@ job_done (gpointer user_data)
 		job->destroy (job->async_result,
 			      job->user_data);
 	}
-
-	g_return_val_if_fail (job->queue, FALSE);
 
 	/* return the worker into the list of idle threads */
 	job->queue->idle_threads = g_list_prepend (job->queue->idle_threads,
