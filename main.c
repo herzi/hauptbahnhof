@@ -66,20 +66,12 @@ main (int   argc,
 	}
 
 	queue = queue_new ();
-	for (i = 0; i < 1; i++) {
+	for (i = 0; i < 3; i++) {
 		queue_queue (queue,
 			     sleep_job,
 			     NULL,
 			     NULL);
 	}
-	queue_queue (queue,
-		     sleep_job,
-		     NULL,
-		     NULL);
-	queue_queue (queue,
-		     sleep_job,
-		     NULL,
-		     NULL);
 
 	main_loop = g_main_loop_new (NULL, FALSE);
 
