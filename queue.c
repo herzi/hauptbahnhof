@@ -52,8 +52,14 @@ static void queue_schedule_job (Queue          * queue,
 static inline guint
 get_n_processors (void)
 {
-	/* FIXME: add Mac/Windows implementations */
+#ifdef __linux
 	return sysconf(_SC_NPROCESSORS_ONLN);
+	/* FIXME: add Mac/Windows implementations */
+#else
+	g_warning ("Your operating system is unsupported; you'll only get one core. "
+		   "Feel free to fix this at " G_STRLOC);
+	return 1;
+#endif
 }
 
 /*
