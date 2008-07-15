@@ -1,5 +1,7 @@
 all: demo
 
+PLATFORM_FLAGS=$(shell uname -s|grep -q Darwin && echo -framework CoreServices)
+
 sources=\
 	main.c \
 	queue.c \
@@ -11,7 +13,7 @@ headers=\
 	$(NULL)
 
 demo: $(sources:.c=.o) Makefile
-	gcc -ggdb -o $@ $(sources:.c=.o) $(shell pkg-config --libs gthread-2.0)
+	gcc -ggdb $(PLATFORM_FLAGS) -o $@ $(sources:.c=.o) $(shell pkg-config --libs gthread-2.0)
 
 %.o: %.c $(headers) Makefile
 	gcc -ggdb -c -o $@ $< $(shell pkg-config --cflags gthread-2.0)

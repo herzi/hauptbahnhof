@@ -24,6 +24,9 @@
 #include "queue.h"
 
 #include <unistd.h>
+#ifdef __APPLE_CC__
+#include <CoreServices/CoreServices.h>
+#endif
 #include "worker.h"
 
 struct _Queue {
@@ -55,6 +58,8 @@ get_n_processors (void)
 #ifdef __linux
 	return sysconf(_SC_NPROCESSORS_ONLN);
 	/* FIXME: add Mac/Windows implementations */
+#elif __APPLE_CC__
+        return MPProcessors ();
 #else
 	g_warning ("Your operating system is unsupported; you'll only get one core. "
 		   "Feel free to fix this at " G_STRLOC);
