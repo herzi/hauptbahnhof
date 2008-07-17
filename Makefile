@@ -12,8 +12,8 @@ headers=\
 	worker.h \
 	$(NULL)
 
-install: all
-	install demo /opt/gtk/bin
+install:
+check:
 
 demo: $(sources:.c=.o) Makefile
 	gcc -ggdb $(PLATFORM_FLAGS) -o $@ $(sources:.c=.o) $(shell pkg-config --libs gthread-2.0)
